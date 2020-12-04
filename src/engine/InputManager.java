@@ -13,16 +13,23 @@ public final class InputManager implements KeyListener {
 
 	/** Number of recognised keys. */
 	private static final int NUM_KEYS = 256;
-	/** Array with the jeys marked as pressed or not. */
+	/** Array with the keys marked as pressed or not. */
 	private static boolean[] keys;
 	/** Singleton instance of the class. */
 	private static InputManager instance;
+	/** Array with the keys marked as toggled or not. */
+	private static boolean[] toggles;
+	/** Array with the keys marked as toggled or not. */
+	private static boolean[] toggleHelper;
 
 	/**
 	 * Private constructor.
 	 */
 	private InputManager() {
 		keys = new boolean[NUM_KEYS];
+		toggles = new boolean[NUM_KEYS];
+		toggleHelper = new boolean[NUM_KEYS];
+		resetToggles();
 	}
 
 	/**
@@ -55,8 +62,11 @@ public final class InputManager implements KeyListener {
 	 */
 	@Override
 	public void keyPressed(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS)
+		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
 			keys[key.getKeyCode()] = true;
+			if (!toggleHelper[key.getKeyCode()] && !toggles[key.getKeyCode()]) toggles[key.getKeyCode()] = true;
+			else if (toggleHelper[key.getKeyCode()] && toggles[key.getKeyCode()]) toggles[key.getKeyCode()] = false;
+		}
 	}
 
 	/**
@@ -67,8 +77,11 @@ public final class InputManager implements KeyListener {
 	 */
 	@Override
 	public void keyReleased(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS)
+		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
 			keys[key.getKeyCode()] = false;
+			if (!toggleHelper[key.getKeyCode()] && toggles[key.getKeyCode()]) toggleHelper[key.getKeyCode()] = true;
+			else if (toggleHelper[key.getKeyCode()] && !toggles[key.getKeyCode()]) toggleHelper[key.getKeyCode()] = false;
+		}
 	}
 
 	/**
@@ -80,5 +93,24 @@ public final class InputManager implements KeyListener {
 	@Override
 	public void keyTyped(final KeyEvent key) {
 
+	}
+
+	/**
+	 * Returns true if the provided key is currently toggled.
+	 *
+	 * @param keyCode
+	 *            Key typed.
+	 * @return toggle state.
+	 */
+	public boolean isToggled(final int keyCode) { return toggles[keyCode]; }
+
+	/**
+	 * Reset all toggles off.
+	 */
+	public void resetToggles() {
+		for (int i = 0; i < NUM_KEYS; i++) {
+			toggles[i] = false;
+			toggleHelper[i] = false;
+		}
 	}
 }
