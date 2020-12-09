@@ -8,6 +8,7 @@ import engine.Cooldown;
 import engine.Core;
 import engine.GameSettings;
 import engine.GameState;
+import engine.Pauser;
 import entity.Bullet;
 import entity.BulletPool;
 import entity.EnemyShip;
@@ -37,6 +38,9 @@ public class GameScreen extends Screen {
 	private static final int SCREEN_CHANGE_INTERVAL = 1500;
 	/** Height of the interface separation line. */
 	private static final int SEPARATION_LINE_HEIGHT = 40;
+
+	/** Milliseconds between changes in user selection. */
+	private static final int SELECTION_TIME = 200;
 
 	/** Current game difficulty settings. */
 	private GameSettings gameSettings;
@@ -70,8 +74,10 @@ public class GameScreen extends Screen {
 	private boolean levelFinished;
 	/** Checks if a bonus life is received. */
 	private boolean bonusLife;
-	/** Checks if the game pauses. */
-	private static boolean isPaused;
+
+	/** Pauser to pause the game. */
+	private Pauser pauser;
+	private Cooldown selectionCooldown;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -103,6 +109,10 @@ public class GameScreen extends Screen {
 			this.lives++;
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
+
+		this.returnCode = 2;
+		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
+		this.selectionCooldown.reset();
 	}
 
 	/**
@@ -128,7 +138,7 @@ public class GameScreen extends Screen {
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
 
-		inputManager.resetToggles();
+		inputManager.resetToggleAll();
 	}
 
 	/**
@@ -139,8 +149,11 @@ public class GameScreen extends Screen {
 	public final int run() {
 		super.run();
 
-		this.score += LIFE_SCORE * (this.lives - 1);
-		this.logger.info("Screen cleared with a score of " + this.score);
+		/** If the game is end without exit. */
+		if (returnCode == 2) {
+			this.score += LIFE_SCORE * (this.lives - 1);
+			this.logger.info("Screen cleared with a score of " + this.score);
+		}
 
 		return this.returnCode;
 	}
@@ -153,9 +166,10 @@ public class GameScreen extends Screen {
 
 		if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
-			isPaused = inputManager.isToggled(KeyEvent.VK_ESCAPE);
+			if (pauser == null && inputManager.isTogglePressed(KeyEvent.VK_ESCAPE))
+				pauser = new Pauser();
 
-			if (!isPaused) {
+			if (pauser == null) {
 
 				if (!this.ship.isDestroyed()) {
 					boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
@@ -202,13 +216,32 @@ public class GameScreen extends Screen {
 				this.enemyShipFormation.update();
 				this.enemyShipFormation.shoot(this.bullets);
 			}
-		}
-		else {
-			isPaused = false;
-			inputManager.resetToggles();
+			else if (this.selectionCooldown.checkFinished()) {
+				if (inputManager.isKeyDown(KeyEvent.VK_UP)
+						|| inputManager.isKeyDown(KeyEvent.VK_W)) {
+					previousMenuItem();
+					this.selectionCooldown.reset();
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
+						|| inputManager.isKeyDown(KeyEvent.VK_S)) {
+					nextMenuItem();
+					this.selectionCooldown.reset();
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
+					if (this.returnCode == 2) {
+						inputManager.resetToggle(KeyEvent.VK_ESCAPE);
+						pauser = null;
+						this.logger.info("Continue game.");
+					}
+					else if (this.returnCode == 1) {
+						this.isRunning = false;
+						this.lives = 0;
+						this.logger.info("Exiting game.");
+					}
+			}
 		}
 
-		if (!isPaused) {
+		if (pauser == null) {
 			manageCollisions();
 			cleanBullets();
 		}
@@ -263,12 +296,12 @@ public class GameScreen extends Screen {
 		}
 
 		// Pause game
-		if (isPaused) {
-			drawManager.drawPause(this);
+		if (pauser != null) {
+			drawManager.drawPause(this, this.returnCode);
 			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
-					/ 12);
+					/ 6);
 			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
-					/ 12);
+					/ 6);
 		}
 
 		drawManager.completeDrawing(this);
@@ -361,5 +394,25 @@ public class GameScreen extends Screen {
 	public final GameState getGameState() {
 		return new GameState(this.level, this.score, this.lives,
 				this.bulletsShot, this.shipsDestroyed);
+	}
+
+	/**
+	 * Shifts the focus to the next menu item.
+	 */
+	private void nextMenuItem() {
+		if (this.returnCode == 2)
+			this.returnCode = 1;
+		else
+			this.returnCode++;
+	}
+
+	/**
+	 * Shifts the focus to the previous menu item.
+	 */
+	private void previousMenuItem() {
+		if (this.returnCode == 1)
+			this.returnCode = 2;
+		else
+			this.returnCode--;
 	}
 }

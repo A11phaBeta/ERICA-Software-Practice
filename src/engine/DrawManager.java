@@ -560,13 +560,38 @@ public final class DrawManager {
 					+ fontBigMetrics.getHeight() / 3);
 	}
 
-	public void drawPause(final Screen screen) {
+	/**
+	 * Draws pause menu.
+	 *
+	 * @param screen
+	 *            Screen to draw on.
+	 * @param option
+	 *            Option selected.
+	 */
+	public void drawPause(final Screen screen, final int option) {
+		String resumeString = "resume";
+		String exitString = "exit";
+
 		int rectWidth = screen.getWidth();
-		int rectHeight = screen.getHeight() / 6;
+		int rectHeight = screen.getHeight() / 3;
 		backBufferGraphics.setColor(Color.BLACK);
 		backBufferGraphics.fillRect(0, screen.getHeight() / 2 - rectHeight / 2,
 				rectWidth, rectHeight);
-		backBufferGraphics.setColor(Color.GREEN);
-		drawCenteredBigString(screen, "Paused",screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
+		backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredBigString(screen, "Paused",screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3
+			- screen.getHeight() / 12 - fontBigMetrics.getHeight() / 3);
+
+		if (option == 2)
+			backBufferGraphics.setColor(Color.GREEN);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, resumeString, screen.getHeight() / 2);
+		if (option == 1)
+			backBufferGraphics.setColor(Color.GREEN);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, exitString, screen.getHeight() / 2
+				+ fontRegularMetrics.getHeight() * 2);
+
 	}
 }
