@@ -29,7 +29,7 @@ public final class InputManager implements KeyListener {
 		keys = new boolean[NUM_KEYS];
 		toggles = new boolean[NUM_KEYS];
 		toggleHelper = new boolean[NUM_KEYS];
-		resetToggles();
+		resetToggleAll();
 	}
 
 	/**
@@ -96,18 +96,38 @@ public final class InputManager implements KeyListener {
 	}
 
 	/**
-	 * Returns true if the provided key is currently toggled.
+	 * Returns true if the toggle of provided key is on when the key is pressed.
 	 *
 	 * @param keyCode
 	 *            Key typed.
 	 * @return toggle state.
 	 */
-	public boolean isToggled(final int keyCode) { return toggles[keyCode]; }
+	public boolean isTogglePressed(final int keyCode) { return toggles[keyCode]; }
+
+	/**
+	 * Returns true if the toggle of provided key is on when the key is released.
+	 *
+	 * @param keyCode
+	 *            Key typed.
+	 * @return toggle state.
+	 */
+	public boolean isToggleReleased(final int keyCode) { return toggleHelper[keyCode]; }
+
+	/**
+	 * Reset toggle of the provided key.
+	 *
+	 * @param keyCode
+	 *            Key typed.
+	 */
+	public void resetToggle(final int keyCode) {
+		toggles[keyCode] = false;
+		toggleHelper[keyCode] = false;
+	}
 
 	/**
 	 * Reset all toggles off.
 	 */
-	public void resetToggles() {
+	public void resetToggleAll() {
 		for (int i = 0; i < NUM_KEYS; i++) {
 			toggles[i] = false;
 			toggleHelper[i] = false;

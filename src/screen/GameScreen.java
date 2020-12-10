@@ -8,6 +8,7 @@ import engine.Cooldown;
 import engine.Core;
 import engine.GameSettings;
 import engine.GameState;
+import engine.Pauser;
 import entity.Bullet;
 import entity.BulletPool;
 import entity.EnemyShip;
@@ -70,8 +71,9 @@ public class GameScreen extends Screen {
 	private boolean levelFinished;
 	/** Checks if a bonus life is received. */
 	private boolean bonusLife;
+
 	/** Checks if the game pauses. */
-	private static boolean isPaused;
+	private static Pauser pauser;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -128,7 +130,7 @@ public class GameScreen extends Screen {
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
 
-		inputManager.resetToggles();
+		this.inputManager.resetToggleAll();
 	}
 
 	/**
@@ -153,9 +155,15 @@ public class GameScreen extends Screen {
 
 		if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
-			isPaused = inputManager.isToggled(KeyEvent.VK_ESCAPE);
+			if (this.pauser == null && this.inputManager.isTogglePressed(KeyEvent.VK_ESCAPE))
+				this.pauser = new Pauser();
+			else if (pauser != null && this.inputManager.isTogglePressed(KeyEvent.VK_ESCAPE) == false) {
+				this.pauser = null;
+				this.logger.info("Extincting pauser.");
+				this.logger.info("Resuming game.");
+			}
 
-			if (!isPaused) {
+			if (pauser == null) {
 
 				if (!this.ship.isDestroyed()) {
 					boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
@@ -203,12 +211,8 @@ public class GameScreen extends Screen {
 				this.enemyShipFormation.shoot(this.bullets);
 			}
 		}
-		else {
-			isPaused = false;
-			inputManager.resetToggles();
-		}
 
-		if (!isPaused) {
+		if (pauser == null) {
 			manageCollisions();
 			cleanBullets();
 		}
@@ -263,7 +267,7 @@ public class GameScreen extends Screen {
 		}
 
 		// Pause game
-		if (isPaused) {
+		if (pauser != null) {
 			drawManager.drawPause(this);
 			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
 					/ 12);
