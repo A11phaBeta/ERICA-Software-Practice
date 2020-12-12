@@ -219,8 +219,10 @@ public class GameScreen extends Screen {
 			this.enemyShipFormation.shoot(this.bullets);
 		}
 
-		manageCollisions();
-		cleanBullets();
+		if (!this.paused) {
+			manageCollisions();
+			cleanBullets();
+		}
 		draw();
 
 
