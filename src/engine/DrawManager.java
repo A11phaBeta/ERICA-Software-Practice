@@ -457,7 +457,7 @@ public final class DrawManager {
 	 */
 	public void drawHighScoreMenu(final Screen screen) {
 		String highScoreString = "High Scores";
-		String instructionsString = "Press Space to return";
+		String instructionsString = "Press Space to return / Ctrl+r to clear";
 
 		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, highScoreString, screen.getHeight() / 8);
