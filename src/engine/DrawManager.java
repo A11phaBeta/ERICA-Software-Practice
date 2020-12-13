@@ -588,7 +588,7 @@ public final class DrawManager {
 		drawCenteredRegularString(screen, instructionString,
 					screen.getHeight() / 2);
 
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, difficultyString, screen.getHeight() / 3);
 	}
 
@@ -598,19 +598,19 @@ public final class DrawManager {
 		String hardString = "HARD";
 
 		if (option == 1)
-				backBufferGraphics.setColor(Color.GREEN);
+				backBufferGraphics.setColor(Color.MAGENTA);
 		else
 				backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, easyString,
 				screen.getHeight() / 3 * 2);
 		if (option == 2)
-			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, normalString,screen.getHeight()
 						/ 3 * 2 + fontRegularMetrics.getHeight() * 2);
 		if (option == 3)
-			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, hardString,screen.getHeight()
