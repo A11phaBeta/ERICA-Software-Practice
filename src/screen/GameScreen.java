@@ -45,7 +45,7 @@ public class GameScreen extends Screen {
 	/** Formation of enemy ships. */
 	private EnemyShipFormation enemyShipFormation;
 	/** Player's ship. */
-	private Ship ship;
+	private Ship ship, ship2;
 	/** Bonus enemy ship that appears sometimes. */
 	private EnemyShip enemyShipSpecial;
 	/** Minimum time between bonus ship appearances. */
@@ -71,6 +71,11 @@ public class GameScreen extends Screen {
 	/** Checks if a bonus life is received. */
 	private boolean bonusLife;
 
+	private boolean paused;
+
+	public static boolean gotoMain = false;
+	public static boolean formatLevel = false;
+
 	/**
 	 * Constructor, establishes the properties of the screen.
 	 * 
@@ -78,7 +83,7 @@ public class GameScreen extends Screen {
 	 *            Current game state.
 	 * @param gameSettings
 	 *            Current game settings.
-	 * @param bonnusLife
+	 * @param bonusLife
 	 *            Checks if a bonus life is awarded this level.
 	 * @param width
 	 *            Screen width.
@@ -91,6 +96,8 @@ public class GameScreen extends Screen {
 			final GameSettings gameSettings, final boolean bonusLife,
 			final int width, final int height, final int fps) {
 		super(width, height, fps);
+
+		gotoMain = false;
 
 		this.gameSettings = gameSettings;
 		this.bonusLife = bonusLife;
@@ -111,7 +118,8 @@ public class GameScreen extends Screen {
 
 		enemyShipFormation = new EnemyShipFormation(this.gameSettings);
 		enemyShipFormation.attach(this);
-		this.ship = new Ship(this.width / 2, this.height - 30);
+		this.ship = new Ship(30, this.height - 30);
+		this.ship2 = new Ship(this.width - 30, this.height - 30);
 		// Appears each 10-30 seconds.
 		this.enemyShipSpecialCooldown = Core.getVariableCooldown(
 				BONUS_SHIP_INTERVAL, BONUS_SHIP_VARIANCE);
@@ -147,7 +155,30 @@ public class GameScreen extends Screen {
 	protected final void update() {
 		super.update();
 
-		if (this.inputDelay.checkFinished() && !this.levelFinished) {
+		if(inputManager.isKeyDown(KeyEvent.VK_ESCAPE)){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			this.paused = !this.paused;
+		}
+
+		if(this.paused){
+			if(inputManager.isKeyDown(KeyEvent.VK_ENTER)){
+				this.gotoMain = true;
+				this.isRunning = false;
+			}
+			else if(inputManager.isKeyDown(KeyEvent.VK_R)) {
+				this.lives = 0;
+				this.formatLevel = true;
+				this.isRunning = false;
+			}
+		}
+
+
+
+		if (this.inputDelay.checkFinished() && !this.levelFinished && !this.paused) {
 
 			if (!this.ship.isDestroyed()) {
 				boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
@@ -166,9 +197,10 @@ public class GameScreen extends Screen {
 				if (moveLeft && !isLeftBorder) {
 					this.ship.moveLeft();
 				}
-				if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
+				if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 					if (this.ship.shoot(this.bullets))
 						this.bulletsShot++;
+				}
 			}
 
 			if (this.enemyShipSpecial != null) {
@@ -199,6 +231,7 @@ public class GameScreen extends Screen {
 		cleanBullets();
 		draw();
 
+
 		if ((this.enemyShipFormation.isEmpty() || this.lives == 0)
 				&& !this.levelFinished) {
 			this.levelFinished = true;
@@ -207,6 +240,7 @@ public class GameScreen extends Screen {
 
 		if (this.levelFinished && this.screenFinishedCooldown.checkFinished())
 			this.isRunning = false;
+
 
 	}
 
@@ -218,6 +252,7 @@ public class GameScreen extends Screen {
 
 		drawManager.drawEntity(this.ship, this.ship.getPositionX(),
 				this.ship.getPositionY());
+		drawManager.drawEntity(this.ship2, this.ship2.getPositionX(), this.ship2.getPositionY());
 		if (this.enemyShipSpecial != null)
 			drawManager.drawEntity(this.enemyShipSpecial,
 					this.enemyShipSpecial.getPositionX(),
@@ -245,6 +280,18 @@ public class GameScreen extends Screen {
 					/ 12);
 			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
 					/ 12);
+		}
+
+		if (this.paused) {
+			drawManager.initDrawing(this);
+
+			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
+					/ 10);
+			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
+					/ 5);
+			drawManager.drawPause(this);
+
+			drawManager.completeDrawing(this);
 		}
 
 		drawManager.completeDrawing(this);
