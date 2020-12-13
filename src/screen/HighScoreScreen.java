@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import engine.Core;
+import engine.FileManager;
 import engine.Score;
 
 /**
@@ -61,6 +62,16 @@ public class HighScoreScreen extends Screen {
 		if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
 				&& this.inputDelay.checkFinished())
 			this.isRunning = false;
+
+		if (inputManager.isKeyDown(KeyEvent.VK_CONTROL)
+				&& inputManager.isKeyDown(KeyEvent.VK_R)) {
+			this.isRunning = false;
+			try {
+				FileManager.clearHighScores();
+			} catch (IOException e) {
+
+			}
+		}
 	}
 
 	/**

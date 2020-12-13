@@ -268,4 +268,28 @@ public final class FileManager {
 				bufferedWriter.close();
 		}
 	}
+
+	public static void clearHighScores() throws IOException {
+		OutputStream outputStream = null;
+		BufferedWriter bufferedWriter = null;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String scoresPath = new File(jarPath).getParent();
+			scoresPath += File.separator;
+			scoresPath += "scores";
+
+			File scoresFile = new File(scoresPath);
+
+			if (scoresFile.exists())
+				scoresFile.delete();
+
+		} finally {
+			if (bufferedWriter != null)
+				bufferedWriter.close();
+		}
+	}
 }
