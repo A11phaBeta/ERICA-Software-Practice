@@ -75,7 +75,8 @@ public final class DrawManager {
 		/** Bonus ship. */
 		EnemyShipSpecial,
 		/** Destroyed enemy ship. */
-		Explosion
+		Explosion,
+		Spaceship
 	};
 
 	/**
@@ -101,6 +102,7 @@ public final class DrawManager {
 			spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
 			spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
 			spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+			spriteMap.put(SpriteType.Spaceship, new boolean[13][8]);
 
 			fileManager.loadSprite(spriteMap);
 			logger.info("Finished loading the sprites.");
@@ -204,7 +206,7 @@ public final class DrawManager {
 	 */
 	@SuppressWarnings("unused")
 	private void drawBorders(final Screen screen) {
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		backBufferGraphics.drawLine(0, 0, screen.getWidth() - 1, 0);
 		backBufferGraphics.drawLine(0, 0, 0, screen.getHeight() - 1);
 		backBufferGraphics.drawLine(screen.getWidth() - 1, 0,
@@ -269,7 +271,7 @@ public final class DrawManager {
 	 *            Y coordinate of the line.
 	 */
 	public void drawHorizontalLine(final Screen screen, final int positionY) {
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		backBufferGraphics.drawLine(0, positionY, screen.getWidth(), positionY);
 		backBufferGraphics.drawLine(0, positionY + 1, screen.getWidth(),
 				positionY + 1);
@@ -282,15 +284,16 @@ public final class DrawManager {
 	 *            Screen to draw on.
 	 */
 	public void drawTitle(final Screen screen) {
-		String titleString = "Invaders";
+		String titleString = "ERICA Invaders";
 		String instructionsString =
 				"select with w+s / arrows, confirm with space";
+
 
 		backBufferGraphics.setColor(Color.GRAY);
 		drawCenteredRegularString(screen, instructionsString,
 				screen.getHeight() / 2);
 
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
 	}
 
@@ -308,19 +311,19 @@ public final class DrawManager {
 		String exitString = "exit";
 
 		if (option == 2)
-			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, playString,
 				screen.getHeight() / 3 * 2);
 		if (option == 3)
-			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, highScoresString, screen.getHeight()
 				/ 3 * 2 + fontRegularMetrics.getHeight() * 2);
 		if (option == 0)
-			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, exitString, screen.getHeight() / 3
@@ -382,7 +385,7 @@ public final class DrawManager {
 		String newRecordString = "New Record!";
 		String introduceNameString = "Introduce name:";
 
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredRegularString(screen, newRecordString, screen.getHeight()
 				/ 4 + fontRegularMetrics.getHeight() * 10);
 		backBufferGraphics.setColor(Color.WHITE);
@@ -399,7 +402,7 @@ public final class DrawManager {
 
 		for (int i = 0; i < 3; i++) {
 			if (i == nameCharSelected)
-				backBufferGraphics.setColor(Color.GREEN);
+				backBufferGraphics.setColor(Color.MAGENTA);
 			else
 				backBufferGraphics.setColor(Color.WHITE);
 
@@ -434,12 +437,12 @@ public final class DrawManager {
 
 		int height = isNewRecord ? 4 : 2;
 
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, gameOverString, screen.getHeight()
 				/ height - fontBigMetrics.getHeight() * 2);
 
 		if (acceptsInput)
-			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.GRAY);
 		drawCenteredRegularString(screen, continueOrExitString,
@@ -456,7 +459,7 @@ public final class DrawManager {
 		String highScoreString = "High Scores";
 		String instructionsString = "Press Space to return";
 
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, highScoreString, screen.getHeight() / 8);
 
 		backBufferGraphics.setColor(Color.GRAY);
@@ -540,7 +543,7 @@ public final class DrawManager {
 		backBufferGraphics.setColor(Color.BLACK);
 		backBufferGraphics.fillRect(0, screen.getHeight() / 2 - rectHeight / 2,
 				rectWidth, rectHeight);
-		backBufferGraphics.setColor(Color.GREEN);
+		backBufferGraphics.setColor(Color.MAGENTA);
 		if (number >= 4)
 			if (!bonusLife) {
 				drawCenteredBigString(screen, "Level " + level,
@@ -558,5 +561,21 @@ public final class DrawManager {
 		else
 			drawCenteredBigString(screen, "GO!", screen.getHeight() / 2
 					+ fontBigMetrics.getHeight() / 3);
+	}
+
+	public void drawPause(final Screen screen){
+		int rectWidth = screen.getWidth();
+		int rectHeight = screen.getHeight() / 6;
+		backBufferGraphics.setColor(Color.BLACK);
+		backBufferGraphics.fillRect(0, screen.getHeight() / 2 - rectHeight / 2,
+				rectWidth, rectHeight);
+		backBufferGraphics.setColor(Color.MAGENTA);
+		drawCenteredBigString(screen, "PAUSE",
+				screen.getHeight() / 2
+						+ fontBigMetrics.getHeight() / 3);
+
+		backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, "GOTO MAIN [ ENTER ]", screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3 + 30);
+		drawCenteredRegularString(screen, "RETURN GAME [ ESC ]", screen.getHeight() / 2 + (fontBigMetrics.getHeight() / 3 + 30) + (fontBigMetrics.getHeight() / 3 + 15));
 	}
 }
