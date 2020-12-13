@@ -17,6 +17,8 @@ public class GameSettings {
 	/** Frequency of enemy shootings, +/- 30%. */
 	private int shootingFrecuency;
 
+	private int difficulty;
+
 	/**
 	 * Constructor.
 	 * 
@@ -35,6 +37,21 @@ public class GameSettings {
 		this.formationHeight = formationHeight;
 		this.baseSpeed = baseSpeed;
 		this.shootingFrecuency = shootingFrecuency;
+		this.difficulty = 1;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param gameSettings
+	 *            GameSettings instance.
+	 */
+	public GameSettings(GameSettings old) {
+		this.formationWidth = old.getFormationWidth();
+		this.formationHeight = old.getFormationHeight();
+		this.baseSpeed = old.getBaseSpeed();
+		this.shootingFrecuency = old.getShootingFrecuency();
+		this.difficulty = old.getDifficulty();
 	}
 
 	/**
@@ -64,5 +81,9 @@ public class GameSettings {
 	public final int getShootingFrecuency() {
 		return shootingFrecuency;
 	}
+
+	public void setDifficulty(final int difficulty) { this.difficulty = difficulty; }
+
+	public final int getDifficulty() { return this.difficulty; }
 
 }

@@ -33,13 +33,13 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	/** Proportion of B-type ships. */
 	private static final double PROPORTION_B = 0.4;
 	/** Lateral speed of the formation. */
-	private static final int X_SPEED = 8;
+	private static int X_SPEED = 8;
 	/** Downwards speed of the formation. */
-	private static final int Y_SPEED = 4;
+	private static int Y_SPEED = 4;
 	/** Speed of the bullets shot by the members. */
-	private static final int BULLET_SPEED = 4;
+	private static int BULLET_SPEED = 4;
 	/** Proportion of differences between shooting times. */
-	private static final double SHOOTING_VARIANCE = .2;
+	private static double SHOOTING_VARIANCE = .2;
 	/** Margin on the sides of the screen. */
 	private static final int SIDE_MARGIN = 20;
 	/** Margin on the bottom of the screen. */
@@ -425,5 +425,13 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	 */
 	public final boolean isEmpty() {
 		return this.shipCount <= 0;
+	}
+
+	public void setDifficulty(final int x_speed, final int y_speed,final int bullet_speed,
+							  		final double shooting_variance) {
+		this.X_SPEED = x_speed;
+		this.Y_SPEED = y_speed;
+		this.BULLET_SPEED = bullet_speed;
+		this.SHOOTING_VARIANCE = shooting_variance;
 	}
 }
