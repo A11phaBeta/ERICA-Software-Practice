@@ -75,6 +75,8 @@ public class GameScreen extends Screen {
 
 	public static boolean gotoMain = false;
 
+	private static int difficulty;
+
 	/**
 	 * Constructor, establishes the properties of the screen.
 	 * 
@@ -132,6 +134,14 @@ public class GameScreen extends Screen {
 		this.gameStartTime = System.currentTimeMillis();
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
+
+		this.difficulty = this.gameSettings.getDifficulty();
+		if (this.difficulty == 1)
+			this.enemyShipFormation.setDifficulty(8,4,4,.2);
+		else if (this.difficulty == 2)
+			this.enemyShipFormation.setDifficulty(10,6,7,.6);
+		else if (this.difficulty == 3)
+			this.enemyShipFormation.setDifficulty(12,8,10,1.0);
 	}
 
 	/**
@@ -167,6 +177,7 @@ public class GameScreen extends Screen {
 			if(inputManager.isKeyDown(KeyEvent.VK_ENTER)){
 				this.gotoMain = true;
 				this.isRunning = false;
+				this.returnCode = 1;
 			}
 		}
 

@@ -578,4 +578,42 @@ public final class DrawManager {
 		drawCenteredRegularString(screen, "GOTO MAIN [ ENTER ]", screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3 + 30);
 		drawCenteredRegularString(screen, "RETURN GAME [ ESC ]", screen.getHeight() / 2 + (fontBigMetrics.getHeight() / 3 + 30) + (fontBigMetrics.getHeight() / 3 + 15));
 	}
+
+	public void drawDifficulty(final Screen screen) {
+		String difficultyString = "Select Difficulty";
+		String instructionString =
+						"select with w+s / arrows, confirm with space";
+
+		backBufferGraphics.setColor(Color.GRAY);
+		drawCenteredRegularString(screen, instructionString,
+					screen.getHeight() / 2);
+
+		backBufferGraphics.setColor(Color.MAGENTA);
+		drawCenteredBigString(screen, difficultyString, screen.getHeight() / 3);
+	}
+
+	public void drawDifficultyMenu(final Screen screen, final int option) {
+		String easyString = "EASY";
+		String normalString = "NORMAL";
+		String hardString = "HARD";
+
+		if (option == 1)
+				backBufferGraphics.setColor(Color.MAGENTA);
+		else
+				backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, easyString,
+				screen.getHeight() / 3 * 2);
+		if (option == 2)
+			backBufferGraphics.setColor(Color.MAGENTA);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, normalString,screen.getHeight()
+						/ 3 * 2 + fontRegularMetrics.getHeight() * 2);
+		if (option == 3)
+			backBufferGraphics.setColor(Color.MAGENTA);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, hardString,screen.getHeight()
+				/ 3 * 2 + fontRegularMetrics.getHeight() * 4);
+	}
 }

@@ -1,6 +1,5 @@
 package engine;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -54,7 +53,7 @@ public final class Core {
 	/** Difficulty settings for level 7. */
 	private static final GameSettings SETTINGS_LEVEL_7 =
 			new GameSettings(8, 7, 2, 500);
-	
+
 	/** Frame to draw the screen on. */
 	private static Frame frame;
 	/** Screen currently shown. */
@@ -69,7 +68,7 @@ public final class Core {
 	/** Logger handler for printing to console. */
 	private static ConsoleHandler consoleHandler;
 
-	private static boolean isGameFinish = true;
+	private static GameSettings gameSetting;
 
 
 	/**
@@ -125,6 +124,7 @@ public final class Core {
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing title screen.");
+				if (returnCode == 2) returnCode = 4;
 				break;
 			case 2:
 				// Game & score.
@@ -135,7 +135,7 @@ public final class Core {
 							&& gameState.getLivesRemaining() < MAX_LIVES;
 
 						currentScreen = new GameScreen(gameState,
-								gameSettings.get(gameState.getLevel() - 1),
+								gameSetting,
 								bonusLife, width, height, FPS);
 						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 								+ " game screen at " + FPS + " fps.");
@@ -169,8 +169,6 @@ public final class Core {
 					LOGGER.info("Closing score screen.");
 				}else{
 					GameScreen.gotoMain = false;
-					currentScreen = new TitleScreen(width,height,FPS);
-					returnCode = frame.setScreen(currentScreen);
 				}
 				break;
 			case 3:
@@ -180,14 +178,23 @@ public final class Core {
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing high score screen.");
 				break;
+			case 4:
+				// Difficulty menu.
+				currentScreen = new DifficultyScreen(width, height, FPS);
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " difficulty screen at " + FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
 
-				case 4:
-					currentScreen = new PauseScreen(width, height, FPS);
-					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-							+ " high score screen at " + FPS + " fps.");
-					returnCode = frame.setScreen(currentScreen);
-					LOGGER.info("Closing high score screen.");
-					break;
+				gameSetting = new GameSettings(gameSettings.get(gameState.getLevel() - 1));
+				if (returnCode == 2)
+					gameSetting.setDifficulty(2);
+				else if (returnCode == 3) {
+					gameSetting.setDifficulty(3);
+				}
+				returnCode = 2;
+
+				LOGGER.info("Closing difficulty screen.");
+				break;
 
 			default:
 				break;
