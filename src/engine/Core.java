@@ -152,7 +152,7 @@ public final class Core {
 									gameState.getScore(),
 									gameState.getLivesRemaining(),
 									gameState.getBulletsShot(),
-									gameState.getShipsDestroyed()),
+									gameState.getShipsDestroyed(),
 									gameState.getplay2p(),
 									gameState.getScore2p(),
 									gameState.getLivesRemaining2p());
@@ -173,12 +173,12 @@ public final class Core {
 					returnCode = frame.setScreen(currentScreen);
 
 					LOGGER.info("Closing score screen.");
-				}else{
-					GameScreen.gotoMain = false;
 				}
+				else
+					GameScreen.gotoMain = false;
 				break;
 			case 3:
-				gameState.setplay2p(true, 0, MAX_LIVES);
+				gameState = new GameState(1, 0, MAX_LIVES, 0, 0, true, 0, MAX_LIVES);
 				returnCode = 5;
 				break;
 			case 4:

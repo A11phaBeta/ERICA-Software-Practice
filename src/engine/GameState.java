@@ -101,13 +101,6 @@ public class GameState {
 		return shipsDestroyed;
 	}
 
-	public final void setplay2p(final boolean play2p, final int score2p,
-								   final int livesRemaining2p) {
-		this.play2p = play2p;
-		this.score2p = score2p;
-		this.livesRemaining2p = livesRemaining2p;
-	}
-
 	public final boolean getplay2p() { return this.play2p; }
 
 	public final int getScore2p() { return this.score2p; }
