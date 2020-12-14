@@ -44,6 +44,7 @@ public final class BulletPool {
 			bullet.setPositionY(positionY);
 			bullet.setSpeed(speed);
 			bullet.setSprite();
+			bullet.setEntity(entity);
 		} else {
 			bullet = new Bullet(positionX, positionY, speed, entity);
 			bullet.setPositionX(positionX - bullet.getWidth() / 2);

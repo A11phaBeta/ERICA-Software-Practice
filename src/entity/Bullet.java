@@ -86,4 +86,6 @@ public class Bullet extends Entity {
 	}
 
 	public Entity shotFrom() { return entity; }
+
+	public void setEntity(final Entity entity) { this.entity = entity; }
 }

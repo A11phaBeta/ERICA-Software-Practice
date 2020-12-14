@@ -404,7 +404,7 @@ public final class DrawManager {
 	 *            Current character selected for modification.
 	 */
 	public void drawNameInput(final Screen screen, final char[] name,
-			final int nameCharSelected) {
+			final int nameCharSelected, final char[] name2p, final int nameCharSelected2p) {
 		String newRecordString = "New Record!";
 		String introduceNameString = "Introduce name:";
 
@@ -417,7 +417,7 @@ public final class DrawManager {
 
 		// 3 letters name.
 		int positionX = screen.getWidth()
-				/ 2
+				/ 3
 				- (fontRegularMetrics.getWidths()[name[0]]
 						+ fontRegularMetrics.getWidths()[name[1]]
 						+ fontRegularMetrics.getWidths()[name[2]]
@@ -436,6 +436,31 @@ public final class DrawManager {
 									+ fontRegularMetrics.getWidths()[' ']) / 2;
 
 			backBufferGraphics.drawString(Character.toString(name[i]),
+					positionX,
+					screen.getHeight() / 4 + fontRegularMetrics.getHeight()
+							* 14);
+		}
+
+		positionX = screen.getWidth()
+				/ 3 * 2
+				- (fontRegularMetrics.getWidths()[name2p[0]]
+				+ fontRegularMetrics.getWidths()[name2p[1]]
+				+ fontRegularMetrics.getWidths()[name2p[2]]
+				+ fontRegularMetrics.getWidths()[' ']) / 2;
+
+		for (int i = 0; i < 3; i++) {
+			if (i == nameCharSelected2p)
+				backBufferGraphics.setColor(Color.GREEN);
+			else
+				backBufferGraphics.setColor(Color.WHITE);
+
+			positionX += fontRegularMetrics.getWidths()[name2p[i]] / 2;
+			positionX = i == 0 ? positionX
+					: positionX
+					+ (fontRegularMetrics.getWidths()[name2p[i - 1]]
+					+ fontRegularMetrics.getWidths()[' ']) / 2;
+
+			backBufferGraphics.drawString(Character.toString(name2p[i]),
 					positionX,
 					screen.getHeight() / 4 + fontRegularMetrics.getHeight()
 							* 14);
