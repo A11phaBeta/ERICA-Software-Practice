@@ -74,6 +74,7 @@ public class GameScreen extends Screen {
 	private boolean paused;
 
 	public static boolean gotoMain = false;
+	public static boolean formatlevel = false;
 
 	private static int difficulty;
 
@@ -120,6 +121,8 @@ public class GameScreen extends Screen {
 		this.play2p = gameState.getplay2p();
 		this.score2p = gameState.getScore2p();
 		this.lives2p = gameState.getLivesRemaining2p();
+		if (this.bonusLife2p)
+			this.lives2p++;
 	}
 
 	/**
@@ -163,7 +166,7 @@ public class GameScreen extends Screen {
 	public final int run() {
 		super.run();
 
-		if (!this.gotoMain) {
+		if (!this.gotoMain && !this.formatlevel) {
 			this.score += LIFE_SCORE * (this.lives - 1) * this.difficulty;
 			this.score2p += LIFE_SCORE * (this.lives2p - 1) * this.difficulty;
 			this.logger.info("Screen cleared with a score of " + this.score);
@@ -191,6 +194,12 @@ public class GameScreen extends Screen {
 			if(inputManager.isKeyDown(KeyEvent.VK_ENTER)){
 				this.gotoMain = true;
 				this.isRunning = false;
+			}
+			if(inputManager.isKeyDown(KeyEvent.VK_R)){
+				this.formatlevel = true;
+				this.isRunning = false;
+				this.lives = 0;
+				this.lives2p = 0;
 			}
 		}
 
