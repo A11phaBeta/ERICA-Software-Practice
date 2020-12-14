@@ -46,6 +46,11 @@ public class DifficultyScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
                 this.isRunning = false;
+
+            if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
+                this.isRunning = false;
+                this.returnCode = 0;
+            }
         }
     }
 

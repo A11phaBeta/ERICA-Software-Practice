@@ -620,21 +620,30 @@ public final class DrawManager {
 		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, "PAUSE",
 				screen.getHeight() / 2
-						+ fontBigMetrics.getHeight() / 3);
+						+ fontBigMetrics.getHeight() / 24);
 
 		backBufferGraphics.setColor(Color.WHITE);
-		drawCenteredRegularString(screen, "GOTO MAIN [ ENTER ]", screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3 + 30);
-		drawCenteredRegularString(screen, "RETURN GAME [ ESC ]", screen.getHeight() / 2 + (fontBigMetrics.getHeight() / 3 + 30) + (fontBigMetrics.getHeight() / 3 + 15));
+		drawCenteredRegularString(screen, "GOTO MAIN [ ENTER ]", screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3 + 15);
+		drawCenteredRegularString(screen, "RETURN GAME [ ESC ]", screen.getHeight() / 2 + (fontBigMetrics.getHeight() / 3 + 15) + (fontBigMetrics.getHeight() / 3 + 15));
+		drawCenteredRegularString(screen, "RESET GAME [ R ]", screen.getHeight() / 2 + (fontBigMetrics.getHeight() / 3 + 15) + (fontBigMetrics.getHeight() / 3 + 15) + (fontBigMetrics.getHeight() / 3 + 15));
 	}
 
 	public void drawDifficulty(final Screen screen) {
 		String difficultyString = "Select Difficulty";
 		String instructionString =
-						"select with w+s / arrows, confirm with space";
+						"select with w,s or arrows";
+		String instructionString2 =
+				"confirm with space";
+		String instructionString3 =
+				"return with escape";
 
 		backBufferGraphics.setColor(Color.GRAY);
 		drawCenteredRegularString(screen, instructionString,
 					screen.getHeight() / 2);
+		drawCenteredRegularString(screen, instructionString2,
+				screen.getHeight() / 2 + fontRegularMetrics.getHeight());
+		drawCenteredRegularString(screen, instructionString3,
+				screen.getHeight() / 2 + fontRegularMetrics.getHeight() * 2);
 
 		backBufferGraphics.setColor(Color.MAGENTA);
 		drawCenteredBigString(screen, difficultyString, screen.getHeight() / 3);

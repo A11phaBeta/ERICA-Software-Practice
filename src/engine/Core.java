@@ -168,7 +168,10 @@ public final class Core {
 				} while ((gameState.getLivesRemaining() > 0 || (gameState.getplay2p() && gameState.getLivesRemaining2p() > 0))
 						&& gameState.getLevel() <= NUM_LEVELS && !GameScreen.gotoMain);
 
-				if(!GameScreen.gotoMain) {
+				if (GameScreen.formatlevel) {
+					GameScreen.formatlevel = false;
+				}
+				else if(!GameScreen.gotoMain) {
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 							+ " score screen at " + FPS + " fps, with a score of "
 							+ gameState.getScore() + ", "
@@ -206,13 +209,17 @@ public final class Core {
 						+ " difficulty screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 
-				gameSetting = new GameSettings(gameSettings.get(gameState.getLevel() - 1));
-				if (returnCode == 2)
-					gameSetting.setDifficulty(2);
-				else if (returnCode == 3) {
-					gameSetting.setDifficulty(3);
+				if (returnCode != 0) {
+					gameSetting = new GameSettings(gameSettings.get(gameState.getLevel() - 1));
+					if (returnCode == 2)
+						gameSetting.setDifficulty(2);
+					else if (returnCode == 3) {
+						gameSetting.setDifficulty(3);
+					}
+					returnCode = 2;
 				}
-				returnCode = 2;
+				else
+					returnCode = 1;
 
 				LOGGER.info("Closing difficulty screen.");
 				break;
