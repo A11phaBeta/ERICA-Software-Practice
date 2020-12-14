@@ -163,9 +163,11 @@ public class GameScreen extends Screen {
 	public final int run() {
 		super.run();
 
-		this.score += LIFE_SCORE * (this.lives - 1) * this.difficulty;
-		this.score2p += LIFE_SCORE * (this.lives2p - 1) * this.difficulty;
-		this.logger.info("Screen cleared with a score of " + this.score);
+		if (!this.gotoMain) {
+			this.score += LIFE_SCORE * (this.lives - 1) * this.difficulty;
+			this.score2p += LIFE_SCORE * (this.lives2p - 1) * this.difficulty;
+			this.logger.info("Screen cleared with a score of " + this.score);
+		}
 
 		return this.returnCode;
 	}
@@ -189,7 +191,6 @@ public class GameScreen extends Screen {
 			if(inputManager.isKeyDown(KeyEvent.VK_ENTER)){
 				this.gotoMain = true;
 				this.isRunning = false;
-				this.returnCode = 1;
 			}
 		}
 
@@ -271,8 +272,8 @@ public class GameScreen extends Screen {
 		draw();
 
 
-		if ((this.enemyShipFormation.isEmpty() || (this.lives == 0 && (!this.play2p || this.lives2p == 0))
-				&& !this.levelFinished)) {
+		if ((this.enemyShipFormation.isEmpty() || (this.lives == 0 && (!this.play2p || this.lives2p == 0)))
+				&& !this.levelFinished) {
 			this.levelFinished = true;
 			this.screenFinishedCooldown.reset();
 		}
@@ -361,7 +362,7 @@ public class GameScreen extends Screen {
 		Set<Bullet> recyclable = new HashSet<Bullet>();
 		for (Bullet bullet : this.bullets)
 			if (bullet.getSpeed() > 0) {
-				if (checkCollision(bullet, this.ship) && !this.levelFinished) {
+				if (checkCollision(bullet, this.ship) && !this.levelFinished && this.lives > 0) {
 					recyclable.add(bullet);
 					if (!this.ship.isDestroyed()) {
 						this.ship.destroy();
@@ -370,7 +371,7 @@ public class GameScreen extends Screen {
 								+ " lives remaining.");
 					}
 				}
-				if (checkCollision(bullet, this.ship2p) && !this.levelFinished && this.play2p) {
+				if (checkCollision(bullet, this.ship2p) && !this.levelFinished && this.play2p && this.lives2p > 0) {
 					recyclable.add(bullet);
 					if (!this.ship2p.isDestroyed()) {
 						this.ship2p.destroy();

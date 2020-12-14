@@ -70,6 +70,8 @@ public final class Core {
 
 	private static GameSettings gameSetting;
 
+	private static boolean play2p = false;
+
 
 	/**
 	 * Test implementation.
@@ -110,10 +112,14 @@ public final class Core {
 		gameSettings.add(SETTINGS_LEVEL_6);
 		gameSettings.add(SETTINGS_LEVEL_7);
 		
-		GameState gameState = null;
+		GameState gameState;
 
 		int returnCode = 1;
 		do {
+			if (!play2p)
+				gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+			else
+				gameState = new GameState(1, 0, MAX_LIVES, 0, 0, true, 0, MAX_LIVES);
 
 			switch (returnCode) {
 			case 1:
@@ -123,10 +129,8 @@ public final class Core {
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing title screen.");
-				if (returnCode == 2) {
-					gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+				if (returnCode == 2)
 					returnCode = 5;
-				}
 				break;
 			case 2:
 				// Game & score.
@@ -144,7 +148,7 @@ public final class Core {
 								bonusLife, width, height, FPS, bonusLife2p);
 						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 								+ " game screen at " + FPS + " fps.");
-						returnCode = frame.setScreen(currentScreen);
+						frame.setScreen(currentScreen);
 						LOGGER.info("Closing game screen.");
 
 						if(!GameScreen.gotoMain) {
@@ -176,11 +180,16 @@ public final class Core {
 
 					LOGGER.info("Closing score screen.");
 				}
-				else
+				else {
 					GameScreen.gotoMain = false;
+					returnCode = 1;
+				}
+
+				if (returnCode == 1)
+					play2p = false;
 				break;
 			case 3:
-				gameState = new GameState(1, 0, MAX_LIVES, 0, 0, true, 0, MAX_LIVES);
+				play2p = true;
 				returnCode = 5;
 				break;
 			case 4:
