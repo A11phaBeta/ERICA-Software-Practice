@@ -51,6 +51,21 @@ public class GameState {
 		this.livesRemaining2p = 0;
 	}
 
+	public GameState(final int level, final int score,
+					 final int livesRemaining, final int bulletsShot,
+					 final int shipsDestroyed, final boolean play2p,
+					 final int score2p, final int livesRemaining2p) {
+		this.level = level;
+		this.score = score;
+		this.livesRemaining = livesRemaining;
+		this.bulletsShot = bulletsShot;
+		this.shipsDestroyed = shipsDestroyed;
+
+		this.play2p = play2p;
+		this.score2p = score2p;
+		this.livesRemaining2p = livesRemaining2p;
+	}
+
 	/**
 	 * @return the level
 	 */

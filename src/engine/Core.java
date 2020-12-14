@@ -133,10 +133,13 @@ public final class Core {
 					boolean bonusLife = gameState.getLevel()
 							% EXTRA_LIFE_FRECUENCY == 0
 							&& gameState.getLivesRemaining() < MAX_LIVES;
+					boolean bonusLife2p = gameState.getLevel()
+							% EXTRA_LIFE_FRECUENCY == 0
+							&& gameState.getLivesRemaining2p() < MAX_LIVES;
 
 						currentScreen = new GameScreen(gameState,
 								gameSetting,
-								bonusLife, width, height, FPS);
+								bonusLife, width, height, FPS, bonusLife2p);
 						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 								+ " game screen at " + FPS + " fps.");
 						returnCode = frame.setScreen(currentScreen);
@@ -149,11 +152,14 @@ public final class Core {
 									gameState.getScore(),
 									gameState.getLivesRemaining(),
 									gameState.getBulletsShot(),
-									gameState.getShipsDestroyed());
+									gameState.getShipsDestroyed()),
+									gameState.getplay2p(),
+									gameState.getScore2p(),
+									gameState.getLivesRemaining2p());
 
 						}
 
-				} while (gameState.getLivesRemaining() > 0
+				} while ((gameState.getLivesRemaining() > 0 || (gameState.getplay2p() && gameState.getLivesRemaining2p() > 0))
 						&& gameState.getLevel() <= NUM_LEVELS && !GameScreen.gotoMain);
 
 				if(!GameScreen.gotoMain) {
@@ -172,6 +178,8 @@ public final class Core {
 				}
 				break;
 			case 3:
+				gameState.setplay2p(true, 0, MAX_LIVES);
+				returnCode = 5;
 				break;
 			case 4:
 				// High scores.
