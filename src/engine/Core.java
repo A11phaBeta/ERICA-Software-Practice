@@ -110,11 +110,10 @@ public final class Core {
 		gameSettings.add(SETTINGS_LEVEL_6);
 		gameSettings.add(SETTINGS_LEVEL_7);
 		
-		GameState gameState;
+		GameState gameState = null;
 
 		int returnCode = 1;
 		do {
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
 
 			switch (returnCode) {
 			case 1:
@@ -124,7 +123,10 @@ public final class Core {
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing title screen.");
-				if (returnCode == 2) returnCode = 5;
+				if (returnCode == 2) {
+					gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+					returnCode = 5;
+				}
 				break;
 			case 2:
 				// Game & score.

@@ -238,11 +238,17 @@ public final class DrawManager {
 	 * @param score
 	 *            Current score.
 	 */
-	public void drawScore(final Screen screen, final int score) {
+	public void drawScore(final Screen screen, final int score, final boolean play2p, final int score2p) {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.WHITE);
 		String scoreString = String.format("%04d", score);
-		backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
+		String score2pString = String.format("%04d", score2p);
+		if (!play2p)
+			backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
+		else {
+			backBufferGraphics.drawString(scoreString, screen.getWidth() / 2 - 60, 25);
+			backBufferGraphics.drawString(score2pString, screen.getWidth() - 60, 25);
+		}
 	}
 
 	/**
@@ -253,13 +259,23 @@ public final class DrawManager {
 	 * @param lives
 	 *            Current lives.
 	 */
-	public void drawLives(final Screen screen, final int lives) {
+	public void drawLives(final Screen screen, final int lives, final boolean play2p, final int lives2p) {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.WHITE);
 		backBufferGraphics.drawString(Integer.toString(lives), 20, 25);
+		backBufferGraphics.drawString(Integer.toString(lives2p), screen.getWidth() / 2 + 20, 25);
 		Ship dummyShip = new Ship(0, 0);
-		for (int i = 0; i < lives; i++)
-			drawEntity(dummyShip, 40 + 35 * i, 10);
+		Ship dummyShip2p = new Ship(0, 0, true);
+		if (!play2p) {
+			for (int i = 0; i < lives; i++)
+				drawEntity(dummyShip, 40 + 35 * i, 10);
+		}
+		else {
+			for (int i = 0; i < lives; i++)
+				drawEntity(dummyShip, 40 + 35 * i, 10);
+			for (int i = 0; i < lives2p; i++)
+				drawEntity(dummyShip2p, screen.getWidth() / 2 + 40 + 35 * i, 10);
+		}
 	}
 
 	/**

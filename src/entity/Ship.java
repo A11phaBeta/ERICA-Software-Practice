@@ -27,6 +27,8 @@ public class Ship extends Entity {
 	/** Time spent inactive between hits. */
 	private Cooldown destructionCooldown;
 
+	private boolean play2p;
+
 	/**
 	 * Constructor, establishes the ship's properties.
 	 * 
@@ -41,6 +43,25 @@ public class Ship extends Entity {
 		this.spriteType = SpriteType.Spaceship;
 		this.shootingCooldown = Core.getCooldown(SHOOTING_INTERVAL);
 		this.destructionCooldown = Core.getCooldown(1000);
+
+		this.play2p = false;
+	}
+
+	public Ship(final int positionX, final int positionY, final boolean play2p) {
+		super(positionX, positionY, 13 * 2, 8 * 2, Color.MAGENTA);
+
+		this.play2p = play2p;
+
+		if (!play2p)
+			this.spriteType = SpriteType.Spaceship;
+		else {
+			this.spriteType = SpriteType.Ship;
+			this.setColor(Color.GREEN);
+		}
+		this.shootingCooldown = Core.getCooldown(SHOOTING_INTERVAL);
+		this.destructionCooldown = Core.getCooldown(1000);
+
+
 	}
 
 	/**
@@ -66,11 +87,11 @@ public class Ship extends Entity {
 	 *            List of bullets on screen, to add the new bullet.
 	 * @return Checks if the bullet was shot correctly.
 	 */
-	public final boolean shoot(final Set<Bullet> bullets) {
+	public final boolean shoot(final Set<Bullet> bullets, final Entity entity) {
 		if (this.shootingCooldown.checkFinished()) {
 			this.shootingCooldown.reset();
 			bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-					positionY, BULLET_SPEED));
+					positionY, BULLET_SPEED, entity));
 			return true;
 		}
 		return false;
@@ -83,7 +104,10 @@ public class Ship extends Entity {
 		if (!this.destructionCooldown.checkFinished())
 			this.spriteType = SpriteType.ShipDestroyed;
 		else
-			this.spriteType = SpriteType.Spaceship;
+			if (!this.play2p)
+				this.spriteType = SpriteType.Spaceship;
+			else
+				this.spriteType = SpriteType.Ship;
 	}
 
 	/**
