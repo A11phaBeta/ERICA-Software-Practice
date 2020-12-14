@@ -238,11 +238,17 @@ public final class DrawManager {
 	 * @param score
 	 *            Current score.
 	 */
-	public void drawScore(final Screen screen, final int score) {
+	public void drawScore(final Screen screen, final int score, final boolean play2p, final int score2p) {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.WHITE);
 		String scoreString = String.format("%04d", score);
-		backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
+		String score2pString = String.format("%04d", score2p);
+		if (!play2p)
+			backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
+		else {
+			backBufferGraphics.drawString(scoreString, screen.getWidth() / 2 - 60, 25);
+			backBufferGraphics.drawString(score2pString, screen.getWidth() - 60, 25);
+		}
 	}
 
 	/**
@@ -253,13 +259,23 @@ public final class DrawManager {
 	 * @param lives
 	 *            Current lives.
 	 */
-	public void drawLives(final Screen screen, final int lives) {
+	public void drawLives(final Screen screen, final int lives, final boolean play2p, final int lives2p) {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.WHITE);
 		backBufferGraphics.drawString(Integer.toString(lives), 20, 25);
+		backBufferGraphics.drawString(Integer.toString(lives2p), screen.getWidth() / 2 + 20, 25);
 		Ship dummyShip = new Ship(0, 0);
-		for (int i = 0; i < lives; i++)
-			drawEntity(dummyShip, 40 + 35 * i, 10);
+		Ship dummyShip2p = new Ship(0, 0, true);
+		if (!play2p) {
+			for (int i = 0; i < lives; i++)
+				drawEntity(dummyShip, 40 + 35 * i, 10);
+		}
+		else {
+			for (int i = 0; i < lives; i++)
+				drawEntity(dummyShip, 40 + 35 * i, 10);
+			for (int i = 0; i < lives2p; i++)
+				drawEntity(dummyShip2p, screen.getWidth() / 2 + 40 + 35 * i, 10);
+		}
 	}
 
 	/**
@@ -307,6 +323,7 @@ public final class DrawManager {
 	 */
 	public void drawMenu(final Screen screen, final int option) {
 		String playString = "Play";
+		String play2pString = "2P Play";
 		String highScoresString = "High scores";
 		String exitString = "exit";
 
@@ -314,20 +331,26 @@ public final class DrawManager {
 			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
-		drawCenteredRegularString(screen, playString,
-				screen.getHeight() / 3 * 2);
+		drawCenteredRegularString(screen, playString, screen.getHeight()
+				/ 3 * 2 - fontRegularMetrics.getHeight());
 		if (option == 3)
 			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, play2pString, screen.getHeight()
+				/ 3 * 2 + fontRegularMetrics.getHeight());
+		if (option == 4)
+			backBufferGraphics.setColor(Color.MAGENTA);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, highScoresString, screen.getHeight()
-				/ 3 * 2 + fontRegularMetrics.getHeight() * 2);
+				/ 3 * 2 + fontRegularMetrics.getHeight() * 3);
 		if (option == 0)
 			backBufferGraphics.setColor(Color.MAGENTA);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, exitString, screen.getHeight() / 3
-				* 2 + fontRegularMetrics.getHeight() * 4);
+				* 2 + fontRegularMetrics.getHeight() * 5);
 	}
 
 	/**
@@ -381,7 +404,7 @@ public final class DrawManager {
 	 *            Current character selected for modification.
 	 */
 	public void drawNameInput(final Screen screen, final char[] name,
-			final int nameCharSelected) {
+			final int nameCharSelected, final char[] name2p, final int nameCharSelected2p) {
 		String newRecordString = "New Record!";
 		String introduceNameString = "Introduce name:";
 
@@ -394,7 +417,7 @@ public final class DrawManager {
 
 		// 3 letters name.
 		int positionX = screen.getWidth()
-				/ 2
+				/ 3
 				- (fontRegularMetrics.getWidths()[name[0]]
 						+ fontRegularMetrics.getWidths()[name[1]]
 						+ fontRegularMetrics.getWidths()[name[2]]
@@ -413,6 +436,31 @@ public final class DrawManager {
 									+ fontRegularMetrics.getWidths()[' ']) / 2;
 
 			backBufferGraphics.drawString(Character.toString(name[i]),
+					positionX,
+					screen.getHeight() / 4 + fontRegularMetrics.getHeight()
+							* 14);
+		}
+
+		positionX = screen.getWidth()
+				/ 3 * 2
+				- (fontRegularMetrics.getWidths()[name2p[0]]
+				+ fontRegularMetrics.getWidths()[name2p[1]]
+				+ fontRegularMetrics.getWidths()[name2p[2]]
+				+ fontRegularMetrics.getWidths()[' ']) / 2;
+
+		for (int i = 0; i < 3; i++) {
+			if (i == nameCharSelected2p)
+				backBufferGraphics.setColor(Color.GREEN);
+			else
+				backBufferGraphics.setColor(Color.WHITE);
+
+			positionX += fontRegularMetrics.getWidths()[name2p[i]] / 2;
+			positionX = i == 0 ? positionX
+					: positionX
+					+ (fontRegularMetrics.getWidths()[name2p[i - 1]]
+					+ fontRegularMetrics.getWidths()[' ']) / 2;
+
+			backBufferGraphics.drawString(Character.toString(name2p[i]),
 					positionX,
 					screen.getHeight() / 4 + fontRegularMetrics.getHeight()
 							* 14);

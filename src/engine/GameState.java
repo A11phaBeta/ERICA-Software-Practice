@@ -19,6 +19,10 @@ public class GameState {
 	/** Ships destroyed until now. */
 	private int shipsDestroyed;
 
+	private boolean play2p;
+	private int score2p;
+	private int livesRemaining2p;
+
 	/**
 	 * Constructor.
 	 * 
@@ -41,6 +45,25 @@ public class GameState {
 		this.livesRemaining = livesRemaining;
 		this.bulletsShot = bulletsShot;
 		this.shipsDestroyed = shipsDestroyed;
+
+		this.play2p = false;
+		this.score2p = 0;
+		this.livesRemaining2p = 0;
+	}
+
+	public GameState(final int level, final int score,
+					 final int livesRemaining, final int bulletsShot,
+					 final int shipsDestroyed, final boolean play2p,
+					 final int score2p, final int livesRemaining2p) {
+		this.level = level;
+		this.score = score;
+		this.livesRemaining = livesRemaining;
+		this.bulletsShot = bulletsShot;
+		this.shipsDestroyed = shipsDestroyed;
+
+		this.play2p = play2p;
+		this.score2p = score2p;
+		this.livesRemaining2p = livesRemaining2p;
 	}
 
 	/**
@@ -78,4 +101,9 @@ public class GameState {
 		return shipsDestroyed;
 	}
 
+	public final boolean getplay2p() { return this.play2p; }
+
+	public final int getScore2p() { return this.score2p; }
+
+	public final int getLivesRemaining2p() { return this.livesRemaining2p; }
 }

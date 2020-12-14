@@ -43,7 +43,7 @@ public class GameSettings {
 	/**
 	 * Copy constructor.
 	 *
-	 * @param gameSettings
+	 * @param old
 	 *            GameSettings instance.
 	 */
 	public GameSettings(GameSettings old) {

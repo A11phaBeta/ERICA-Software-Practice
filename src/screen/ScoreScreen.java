@@ -46,6 +46,13 @@ public class ScoreScreen extends Screen {
 	/** Time between changes in user selection. */
 	private Cooldown selectionCooldown;
 
+	private boolean play2p;
+	private int score2p;
+	private int livesRemaining2p;
+	private char[] name2p;
+	private int nameCharSelected2p;
+	private boolean isNewRecord2p;
+
 	/**
 	 * Constructor, establishes the properties of the screen.
 	 * 
@@ -72,12 +79,22 @@ public class ScoreScreen extends Screen {
 		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
 		this.selectionCooldown.reset();
 
+		this.play2p = gameState.getplay2p();
+		this.score2p = gameState.getScore2p();
+		this.livesRemaining2p = gameState.getLivesRemaining2p();
+		this.name2p = "AAA".toCharArray();
+		this.nameCharSelected2p = 0;
+
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();
 			if (highScores.size() < MAX_HIGH_SCORE_NUM
 					|| highScores.get(highScores.size() - 1).getScore()
 					< this.score)
 				this.isNewRecord = true;
+			if (highScores.size() < MAX_HIGH_SCORE_NUM
+					|| highScores.get(highScores.size() - 1).getScore()
+					< this.score2p)
+				this.isNewRecord2p = true;
 
 		} catch (IOException e) {
 			logger.warning("Couldn't load high scores!");
@@ -107,17 +124,17 @@ public class ScoreScreen extends Screen {
 				// Return to main menu.
 				this.returnCode = 1;
 				this.isRunning = false;
-				if (this.isNewRecord)
+				if (this.isNewRecord || this.isNewRecord)
 					saveScore();
 			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				// Play again.
 				this.returnCode = 2;
 				this.isRunning = false;
-				if (this.isNewRecord)
+				if (this.isNewRecord || this.isNewRecord2p)
 					saveScore();
 			}
 
-			if (this.isNewRecord && this.selectionCooldown.checkFinished()) {
+			if ((this.isNewRecord || this.isNewRecord2p) && this.selectionCooldown.checkFinished()) {
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)) {
 					this.nameCharSelected = this.nameCharSelected == 2 ? 0
 							: this.nameCharSelected + 1;
@@ -142,6 +159,31 @@ public class ScoreScreen extends Screen {
 							: this.name[this.nameCharSelected] - 1);
 					this.selectionCooldown.reset();
 				}
+
+				if (inputManager.isKeyDown(KeyEvent.VK_D)) {
+					this.nameCharSelected2p = this.nameCharSelected2p == 2 ? 0
+							: this.nameCharSelected2p + 1;
+					this.selectionCooldown.reset();
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_A)) {
+					this.nameCharSelected2p = this.nameCharSelected2p == 0 ? 2
+							: this.nameCharSelected2p - 1;
+					this.selectionCooldown.reset();
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_W)) {
+					this.name2p[this.nameCharSelected2p] =
+							(char) (this.name2p[this.nameCharSelected2p]
+									== LAST_CHAR ? FIRST_CHAR
+									: this.name2p[this.nameCharSelected2p] + 1);
+					this.selectionCooldown.reset();
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_S)) {
+					this.name2p[this.nameCharSelected2p] =
+							(char) (this.name2p[this.nameCharSelected2p]
+									== FIRST_CHAR ? LAST_CHAR
+									: this.name2p[this.nameCharSelected2p] - 1);
+					this.selectionCooldown.reset();
+				}
 			}
 		}
 
@@ -151,7 +193,10 @@ public class ScoreScreen extends Screen {
 	 * Saves the score as a high score.
 	 */
 	private void saveScore() {
-		highScores.add(new Score(new String(this.name), score));
+		if (this.isNewRecord)
+			highScores.add(new Score(new String(this.name), score));
+		if (this.isNewRecord2p)
+			highScores.add(new Score(new String(this.name2p), score2p));
 		Collections.sort(highScores);
 		if (highScores.size() > MAX_HIGH_SCORE_NUM)
 			highScores.remove(highScores.size() - 1);
@@ -175,8 +220,10 @@ public class ScoreScreen extends Screen {
 				this.shipsDestroyed, (float) this.shipsDestroyed
 						/ this.bulletsShot, this.isNewRecord);
 
-		if (this.isNewRecord)
-			drawManager.drawNameInput(this, this.name, this.nameCharSelected);
+		if (this.isNewRecord || this.isNewRecord2p) {
+			drawManager.drawNameInput(this, this.name, this.nameCharSelected,
+							this.name2p, this.nameCharSelected2p);
+		}
 
 		drawManager.completeDrawing(this);
 	}

@@ -18,6 +18,8 @@ public class Bullet extends Entity {
 	 */
 	private int speed;
 
+	private Entity entity;
+
 	/**
 	 * Constructor, establishes the bullet's properties.
 	 * 
@@ -34,6 +36,17 @@ public class Bullet extends Entity {
 
 		this.speed = speed;
 		setSprite();
+
+		this.entity = null;
+	}
+
+	public Bullet(final int positionX, final int positionY, final int speed, final Entity entity) {
+		super(positionX, positionY, 3 * 2, 5 * 2, Color.WHITE);
+
+		this.speed = speed;
+		setSprite();
+
+		this.entity = entity;
 	}
 
 	/**
@@ -71,4 +84,8 @@ public class Bullet extends Entity {
 	public final int getSpeed() {
 		return this.speed;
 	}
+
+	public Entity shotFrom() { return entity; }
+
+	public void setEntity(final Entity entity) { this.entity = entity; }
 }

@@ -70,6 +70,8 @@ public final class Core {
 
 	private static GameSettings gameSetting;
 
+	private static boolean play2p = false;
+
 
 	/**
 	 * Test implementation.
@@ -114,7 +116,10 @@ public final class Core {
 
 		int returnCode = 1;
 		do {
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+			if (!play2p)
+				gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+			else
+				gameState = new GameState(1, 0, MAX_LIVES, 0, 0, true, 0, MAX_LIVES);
 
 			switch (returnCode) {
 			case 1:
@@ -124,7 +129,8 @@ public final class Core {
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing title screen.");
-				if (returnCode == 2) returnCode = 4;
+				if (returnCode == 2)
+					returnCode = 5;
 				break;
 			case 2:
 				// Game & score.
@@ -133,13 +139,16 @@ public final class Core {
 					boolean bonusLife = gameState.getLevel()
 							% EXTRA_LIFE_FRECUENCY == 0
 							&& gameState.getLivesRemaining() < MAX_LIVES;
+					boolean bonusLife2p = gameState.getLevel()
+							% EXTRA_LIFE_FRECUENCY == 0
+							&& gameState.getLivesRemaining2p() < MAX_LIVES;
 
 						currentScreen = new GameScreen(gameState,
 								gameSetting,
-								bonusLife, width, height, FPS);
+								bonusLife, width, height, FPS, bonusLife2p);
 						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 								+ " game screen at " + FPS + " fps.");
-						returnCode = frame.setScreen(currentScreen);
+						frame.setScreen(currentScreen);
 						LOGGER.info("Closing game screen.");
 
 						if(!GameScreen.gotoMain) {
@@ -149,11 +158,14 @@ public final class Core {
 									gameState.getScore(),
 									gameState.getLivesRemaining(),
 									gameState.getBulletsShot(),
-									gameState.getShipsDestroyed());
+									gameState.getShipsDestroyed(),
+									gameState.getplay2p(),
+									gameState.getScore2p(),
+									gameState.getLivesRemaining2p());
 
 						}
 
-				} while (gameState.getLivesRemaining() > 0
+				} while ((gameState.getLivesRemaining() > 0 || (gameState.getplay2p() && gameState.getLivesRemaining2p() > 0))
 						&& gameState.getLevel() <= NUM_LEVELS && !GameScreen.gotoMain);
 
 				if(!GameScreen.gotoMain) {
@@ -167,18 +179,27 @@ public final class Core {
 					returnCode = frame.setScreen(currentScreen);
 
 					LOGGER.info("Closing score screen.");
-				}else{
-					GameScreen.gotoMain = false;
 				}
+				else {
+					GameScreen.gotoMain = false;
+					returnCode = 1;
+				}
+
+				if (returnCode == 1)
+					play2p = false;
 				break;
 			case 3:
+				play2p = true;
+				returnCode = 5;
+				break;
+			case 4:
 				// High scores.
 				currentScreen = new HighScoreScreen(width, height, FPS);
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT + " high score screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing high score screen.");
 				break;
-			case 4:
+			case 5:
 				// Difficulty menu.
 				currentScreen = new DifficultyScreen(width, height, FPS);
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
