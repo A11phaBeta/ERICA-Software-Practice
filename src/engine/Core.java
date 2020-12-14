@@ -124,7 +124,7 @@ public final class Core {
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing title screen.");
-				if (returnCode == 2) returnCode = 4;
+				if (returnCode == 2) returnCode = 5;
 				break;
 			case 2:
 				// Game & score.
@@ -172,13 +172,15 @@ public final class Core {
 				}
 				break;
 			case 3:
+				break;
+			case 4:
 				// High scores.
 				currentScreen = new HighScoreScreen(width, height, FPS);
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT + " high score screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing high score screen.");
 				break;
-			case 4:
+			case 5:
 				// Difficulty menu.
 				currentScreen = new DifficultyScreen(width, height, FPS);
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
